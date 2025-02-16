@@ -1,0 +1,10 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "compile_qrc",
+            "command": "poetry run compile-qrc",
+            "type": "shell"
+        }
+    ]
+}

@@ -2,18 +2,24 @@
 
 import sys
 from pathlib import Path
-import cv2
+
 import numpy as np
 import numpy.typing as npt
+import plotly.io as pio
 from PySide6.QtCore import Property, QObject, QSize, QUrl, Signal, Slot
 from PySide6.QtGui import QGuiApplication, QImage
 from PySide6.QtQml import QQmlApplicationEngine
 from PySide6.QtQuick import QQuickImageProvider
 
-from backend.exosky_backend import ExoSkyBackend, SelectionPlanet, CreateStarChart, ThreeDStarChart
-import plotly.io as pio
+from backend.exosky_backend import (
+    CreateStarChart,
+    ExoSkyBackend,
+    SelectionPlanet,
+    ThreeDStarChart,
+)
 
 CURRENT_DIRECTORY = Path(__file__).resolve().parent
+
 
 class ImageProvider(QQuickImageProvider):
     """Signals for changing the displayed image."""
@@ -34,12 +40,13 @@ class ImageProvider(QQuickImageProvider):
         """Setter."""
         self._image = image.copy()  # type: ignore
 
+
 class EarthNightSky(QObject):
     """Display parameters of planet from Python backend on QML interface."""
 
     earth_nightsky_changed = Signal()
     update_earth_nightsky = Signal()
-    
+
     threed_nightsky_changed = Signal(str)
 
     def __init__(self, parent: QObject | None = None) -> None:
@@ -59,7 +66,7 @@ class EarthNightSky(QObject):
     def get_earth_nightsky(self) -> QImage:
         """Get stars from Earth's pov cone to the target exoplanet."""
         return self._earth_nightsky
-    
+
     @Slot(dict, dict)
     def create_star_chart(
         self,
@@ -94,9 +101,12 @@ class EarthNightSky(QObject):
         threed_star_chart: ThreeDStarChart,
     ) -> None:
         """Have backend display stars in 3D within Earth/exoplanet cone."""
-        fig = ExoSkyBackend().create_threed_star_chart(select_exoplanet, threed_star_chart)
+        fig = ExoSkyBackend().create_threed_star_chart(
+            select_exoplanet, threed_star_chart
+        )
         json_str = pio.to_json(fig)
         self.set_threed_nightsky(json_str)
+
 
 class ExoSkyApp(QGuiApplication):
     """Bridge for creating exosky app."""
@@ -156,10 +166,12 @@ def to_q_image(image: npt.NDArray[np.uint8] | npt.NDArray[np.uint16]) -> QImage:
         raise ValueError("Unsupported image format")
     return q_image
 
+
 def main() -> None:
     """App entry point."""
     app = ExoSkyApp()
     sys.exit(app.exec())
+
 
 if __name__ == "__main__":
     main()

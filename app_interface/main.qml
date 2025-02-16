@@ -614,7 +614,7 @@ ApplicationWindow {
                 anchors.topMargin: 10
                 anchors.left: parent.left
                 anchors.leftMargin: 10
-                spacing: 20
+                spacing: 15
 
                 Column{
                     Label {
@@ -627,7 +627,7 @@ ApplicationWindow {
                     ComboBox {
                         id: comboBoxSelectExoplanets
                         model: ["TOI-700 d", "Ross 128 b", "TRAPPIST-1 e"]
-                        width: 180
+                        width: viewStarfromEarthLabel.width
                         height: 40
                         Layout.fillWidth: true
                         background: Rectangle {
@@ -636,47 +636,34 @@ ApplicationWindow {
                     }
                 }
                 Column {
-                    Label {
-                        id: starSize3DLabel
-                        text: qsTr("Star size")
-                        font.pixelSize: 15
-                        color: "white"
-                    }
-
-                    TextField {
-                        id: starSize3DTextField
-                        placeholderText: qsTr("..in pixel")
-                        height: 40
-                        selectByMouse: true
-                        text: "100"
-                        color: "white"
-                        validator: IntValidator {
-                            bottom: 0
-                        }
-                    }
-                }
-                Column {
+                    
                     Label {
                         id: numberofStars3DLabel
                         text: qsTr("Number of shown stars")
                         font.pixelSize: 15
+                        font.bold: true
                         color: "white"
                     }
 
                     TextField {
                         id: numberofStars3DTextField
-                        placeholderText: qsTr("..int type, max 50000")
+                        width: numberofStars3DLabel.width
+                        placeholderText: qsTr("max to display 24100")
                         height: 40
                         selectByMouse: true
                         text: "5000"
-                        color: "white"
+                        color: "black"
                         validator: IntValidator {
                             bottom: 1
-                            top: 49999
+                            top: 24100
+                        }
+                        background: Rectangle {
+                            color: "white"
+                            border.color: "white"
                         }
                         onTextChanged: {
-                            if (parseInt(numberofStars3DTextField.text) > 49999) {
-                                numberofStars3DTextField.text = "49999";
+                            if (parseInt(numberofStars3DTextField.text) > 24100) {
+                                numberofStars3DTextField.text = "24100";
                             } else if (parseInt(numberofStars3DTextField.text) < 1) {
                                 numberofStars3DTextField.text = "1";
                             }
@@ -685,8 +672,43 @@ ApplicationWindow {
                 }
                 CheckBox {
                     id: checkBoxShiftReference
-                    text: qsTr("Shift Reference?")
+                    // QML doesn't have a direct way to add text under the main text...
+                    text: qsTr("Shift Reference")
                     checked: false
+
+                    contentItem: Column {
+                        spacing: 4
+                        // QML doesn't have a direct way to change textbox and checkbox color...
+                        Row {
+                            spacing: 8
+                            Rectangle {
+                                width: 20
+                                height: 20
+                                radius: 4
+                                border.color: "white"
+                                color: "white"
+                                Text {
+                                    text: checkBoxShiftReference.checked ? "✓" : ""
+                                    color: "black"
+                                    font.pixelSize: 16
+                                    anchors.centerIn: parent
+                                }
+                            }
+                            Text {
+                                text: checkBoxShiftReference.text
+                                color: "white"
+                                font: checkBoxShiftReference.font
+                                verticalAlignment: Text.AlignVCenter
+                            }
+                        }
+                        Text {
+                            text: "Not recommended for now"
+                            color: "white"
+                            font.pixelSize: 10
+                            font.bold: true
+                            verticalAlignment: Text.AlignVCenter
+                        }
+                    }
                 }
                 Button {
                     id: viewNightSky
@@ -700,7 +722,6 @@ ApplicationWindow {
                         };
                         var threed_star_chart = {
                             "number_of_stars": Math.floor(parseFloat(numberofStars3DTextField.text)),
-                            "star_size_perspective": parseFloat(starSize3DTextField.text),
                         };
                         earthnightsky.create_threed_star_chart(select_exoplanet, threed_star_chart);
                     }
@@ -708,12 +729,12 @@ ApplicationWindow {
             }
             WebEngineView {
                 id: webEngineView
-                width: 500
-                height: 500
+                width: 530
+                height: 530
                 anchors.top: rowselectexoplanet.bottom
-                anchors.topMargin: 30
+                anchors.topMargin: 5
                 anchors.left: parent.left
-                anchors.leftMargin: 90
+                anchors.leftMargin: 75
                 transformOrigin: Item.Center
                 settings.webGLEnabled: true
                 settings.accelerated2dCanvasEnabled: true
@@ -723,6 +744,7 @@ ApplicationWindow {
             Connections {
                 target: earthnightsky
                 function onThreed_nightsky_changed() {
+                    // The number of stars in excel list is too large to be displayed all 
                     webEngineView.loadHtml(`
                         <html>
                         <head>
@@ -731,9 +753,14 @@ ApplicationWindow {
                         <body style="margin: 0; padding: 0; overflow: hidden;">
                             <div id="plot" style="width: 100vw; height: 100vh;"></div>
                             <script>
+                                if (window.Plotly) {
+                                    Plotly.purge('plot');  // Clears previous plot from memory
+                                }
                                 var plotData = ${earthnightsky.get_threed_nightsky};
                                 var layout = plotData.layout;
                                 layout.margin = { l: 0, r: 0, t: 0, b: 0 };
+                                layout.scene = layout.scene || {};
+                                layout.scene.pointcloud = true;
                                 Plotly.newPlot('plot', plotData.data, layout);
                             </script>
                         </body>
@@ -749,6 +776,15 @@ ApplicationWindow {
                 anchors.left: parent.left
                 onClicked: {
                     stackView.push(nightSkyInterface)
+                }
+            }
+            Button {
+                id: forwardNightskyCoordsTrans
+                text: "View Nightsky with coord trans (to be continued...)"
+                anchors.bottom: parent.bottom
+                anchors.right: parent.right
+                onClicked: {
+                    stackView.push(threedViewInterface)
                 }
             }
         }

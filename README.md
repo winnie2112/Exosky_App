@@ -64,12 +64,19 @@ Another application of the above mentioned method is viewing the night sky from 
 
 ## App Preview
 <img src='resources/pictures/app_preview/exosky_app.png' width='100%'/>
+Display 3D star chart
+<img src='resources/pictures/app_preview/3D_stars_chart.png' width='100%'/>
 
 ## Web Preview
 <img src='resources/pictures/app_preview/exosky_website.png' width='100%'/>
 
 ## Run App in Python
-### Create virtual environment with poetry
+### Create virtual environment with poetry (1.7.0)
+Download poetry in powershell with pipx
+$env:PIPX_HOME="C:\poetry"
+$env:PIPX_BIN_DIR="C:\poetry\bin"
+pipx install poetry==1.7.0 --force
+
 In vscode terminal:
 - cd <path_to_root_of_exosky_repo>
 - make sure "pyproject.toml" file is in the repo
@@ -94,6 +101,7 @@ Space Agency Data
 
 References
 - [Create Custom Star Maps](https://levelup.gitconnected.com/how-to-use-python-to-create-custom-star-maps-for-your-next-stargazing-journey-9908b421f30e)
+- [Calculate Apparent Magnitude](https://en.wikipedia.org/wiki/Apparent_magnitude)
 - [astropy](https://docs.astropy.org/en/stable/index_user_docs.html)
 - [Miro - a digital collaboration platform](https://miro.com)
 - [Sexigesimal to Decimal Coordinate Converter](https://www.swift.psu.edu/toop/convert.php)
