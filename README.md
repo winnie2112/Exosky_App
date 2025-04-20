@@ -73,9 +73,9 @@ Display 3D star chart
 ## Run App in Python
 ### Create virtual environment with poetry (1.7.0)
 Download poetry in powershell with pipx
-.\python.exe -m pip install pip --upgrade
-...Scripts\pip.exe install pipx
-pipx install poetry==1.7.0 --force
+- .\python.exe -m pip install pip --upgrade
+- ...Scripts\pip.exe install pipx
+- ...Scripts\pipx.exe install poetry==1.7.0 --force
 
 In vscode terminal:
 - cd <path_to_root_of_exosky_repo>
