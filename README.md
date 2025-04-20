@@ -73,8 +73,8 @@ Display 3D star chart
 ## Run App in Python
 ### Create virtual environment with poetry (1.7.0)
 Download poetry in powershell with pipx
-$env:PIPX_HOME="C:\poetry"
-$env:PIPX_BIN_DIR="C:\poetry\bin"
+.\python.exe -m pip install pip --upgrade
+...Scripts\pip.exe install pipx
 pipx install poetry==1.7.0 --force
 
 In vscode terminal:
